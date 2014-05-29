@@ -20,18 +20,28 @@ How to use it
 -------------
 
 1. Clone the repository and load the projects into the workspace.
-2. Open the sample model (TODO).
-3. Right click on the .dn model file and click on "Convert textual dataflow net to XMI" to get a .dataflownet file.
-3. Right click on the .dataflownet file and click on "Generate GraphML Representation" to generate the GraphML file.
-4. Open the GraphML file in yED and layout the graph.
-5. Right click on the .dataflownet file and click on "Generate Java Simulation Code" to generate the Java files into the project (TODO).
-5. Right click on the .dataflownet file and click on "Generate Java UI Code" to generate the Java UI files into the project (TODO).
-6. Open the product "DataflowNetProduct" in the project (TODO) and export the Eclipse RCP.
-7. Run the Eclipse application. The only argument is the name of the process (TODO or TODO in the expample).
+2. Generate the metamodels.
+2.1. Generate typehierarchy (hu.bme.mit.mdsd.pineapple project, TypeHierarchy.genmodel).
+2.2. Generate dataflownet (hu.bme.mit.mdsd.pineapple project, DataflowNet.genmodel).
+3. Generate language (hu.bme.mit.mdsd.pineapple.language, run GenerateDNLanguage.mwe2 as MWE2 workflow).
+4. Run as Eclipse application (proceed with the error: Dispatcher missing).
+5. Link the project "hu.bme.mit.mdsd.pineapple.dataflownet.bundle" into the runtime Eclipse workspace.
+6. Open the project "hu.bme.mit.mdsd.pineapple.sample", the sample instance model is in the file "house_v9.dn".
+7. Right click the "house_v9.dn" and click "Convert textual dataflownet to XMI" to get the "house_v9.dataflownet" file.
+8. Right click on the "house_v9.dataflownet" file and generete the following:
+8.1. Generate GraphML representation using the button "Generate GraphML Representation".
+8.2. Generate Java code using the button "Generate Java Simulation Code".
+8.3. Generate UI using the button "Generate Java UI Code".
+9. Link the generated project "hu.bme.mit.mdsd.pineapple.dataflownet.process.ui" into the host Eclipse application.
+10. Implement the unimplemented methods of the custom complex types in the "src" folder of the project "hu.bme.mit.mdsd.pineapple.dataflownet.bundle".
+11. Export the RCP using the "DataflowNetApplication.product".
+12. Run the RCP in two instances:
+12.1. Run with parameters "local -clearPersistedState". ("local" is the name of the first process in the instance model.)
+12.2. Run with parameters "remote -clearPersistedState". ("remote" is the name of the second process in the instance model.)
 
 Roadmap
 -------
 
 Extension plans:
 * Implement new protocols for remote communication
-* Improve the UI
+* Improve the state machine graph layout

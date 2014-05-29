@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="typehierarchy" nsURI="http://typehierarchy/1.0" nsPrefix="typehierarchy">
+  <eClassifiers xsi:type="ecore:EClass" name="Type" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SimpleType" abstract="true" eSuperTypes="#//Type"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IntType" eSuperTypes="#//SimpleType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="StringType" eSuperTypes="#//SimpleType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="UserType" eSuperTypes="#//SimpleType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="domain" lowerBound="1"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComplexType" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containedTypes" unique="false"
+        lowerBound="2" upperBound="-1" eType="#//SimpleType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DoubleType" eSuperTypes="#//SimpleType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BoolType" eSuperTypes="#//SimpleType"/>
+</ecore:EPackage>

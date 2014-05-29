@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: hu.bme.mit.mdsd.pineapple.dataflownet.incquery
+Bundle-SymbolicName: hu.bme.mit.mdsd.pineapple.dataflownet.incquery;singleton:=true
+Bundle-Version: 0.0.1.qualifier
+Export-Package: hu.bme.mit.pineapple.mdsd.dataflownet.validation,
+ hu.bme.mit.pineapple.mdsd.dataflownet.validation.util
+Require-Bundle: hu.bme.mit.mdsd.pineapple.dataflownet,
+ hu.bme.mit.mdsd.pineapple.typehierarchy,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.transaction,
+ org.eclipse.incquery.runtime,
+ org.eclipse.xtext.xbase.lib
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

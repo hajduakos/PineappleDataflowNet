@@ -1,0 +1,496 @@
+DataflowSystem houseSystem {
+	protocol Paho	
+	types{
+		DoubleType doubleType,
+		BoolType boolType,
+		UserType controlType{domain{"on","off","enable","disable"}},
+		ComplexType boolPair{containedTypes(boolType,boolType)} 	
+	}
+	nets{
+		DataflowNet house{	
+			inputChannels(ch_remote)
+			process local
+			nodes{
+				DataflowNet lighting{
+					outputChannels(ch_contr_light)
+					inputChannels(ch_sens_movement,ch_sens_lightness)
+					nodes{
+						StateMachine sm_movement{
+							initialState movement_no
+							nodes {
+								StateMachineState movement_no{
+									outputTransitions{
+										StateMachineTransition movement_no2yes{
+											priority 0
+											toState movement_yes
+											inputs (rule_movement_true)
+											outputs (rule_movement_light_on)
+										},
+										StateMachineTransition movement_no2no{
+											priority 0
+											toState movement_no
+											inputs (rule_movement_false)
+											outputs(rule_movement_light_off)
+										}
+									}
+								},
+								StateMachineState movement_yes{
+									outputTransitions{
+										StateMachineTransition movement_yes2yes{
+											priority 0
+											toState movement_yes
+											inputs (rule_movement_true)
+											outputs (rule_movement_light_on)
+										},
+										StateMachineTransition movement_yes2no{
+											priority 0
+											toState movement_no
+											inputs (rule_movement_false)
+											outputs(rule_movement_light_off)
+										}
+									}
+								}
+							}
+							firingRules{
+								FiringRule rule_movement_true{
+									compType Equal
+									channel ch_sens_movement
+									tokens{
+										Token{ 
+											value {
+												"true",
+												"true"
+											}
+											type boolPair 
+										}
+									}
+								},
+								FiringRule rule_movement_false{
+									compType NotEqual
+									channel ch_sens_movement
+									tokens{
+										Token{ 
+											value {
+												"true",
+												"true"
+											}
+											type boolPair 
+										}
+									}
+								},
+								FiringRule rule_movement_light_on{
+									channel ch_movement2light
+									tokens{
+										Token{ value {"on"} type controlType}
+									}
+								},
+								FiringRule rule_movement_light_off{
+									channel ch_movement2light
+									tokens{
+										Token{ value {"off"} type controlType}
+									}
+								}
+							}
+						},
+						StateMachine sm_lightness{
+							initialState lightness_no
+							nodes{
+								StateMachineState lightness_no{
+									outputTransitions{
+										StateMachineTransition lightness_no2yes{
+											priority 0
+											toState lightness_yes
+											inputs(rule_lightness_true)
+											outputs(rule_lighness_light_disable)
+										},
+										StateMachineTransition lightness_no2no{
+											priority 0
+											toState lightness_no
+											inputs (rule_lightness_false)
+											outputs(rule_lighness_light_enable)
+										}
+									}
+								},
+								StateMachineState lightness_yes{
+									outputTransitions{
+										StateMachineTransition lightness_yes2yes{
+											priority 0
+											toState lightness_yes
+											inputs (rule_lightness_true)
+											outputs (rule_lighness_light_disable)
+										},
+										StateMachineTransition lightness_yes2no{
+											priority 0
+											toState lightness_no
+											inputs(rule_lightness_false)
+											outputs(rule_lighness_light_enable)
+										}
+									}
+								}
+							}
+							firingRules{
+								FiringRule rule_lightness_true{
+									compType Equal
+									channel ch_sens_lightness
+									tokens{
+										Token{ value {"true"} type boolType}
+									}
+								},
+								FiringRule rule_lightness_false{
+									compType Equal
+									channel ch_sens_lightness
+									tokens{
+										Token{ value {"false"} type boolType}
+									}
+								},
+								FiringRule rule_lighness_light_enable{
+									channel ch_lightness2light
+									tokens{
+										Token{ value {"enable"} type controlType}
+									}
+								},
+								FiringRule rule_lighness_light_disable{
+									channel ch_lightness2light
+									tokens{
+										Token{ value {"disable"} type controlType}
+									}
+								}
+							}
+						},
+						StateMachine sm_light{
+							initialState light_off
+							nodes{
+								StateMachineState light_off{
+									outputTransitions{
+										StateMachineTransition light_off2off1{
+											priority 0
+											toState light_off
+											inputs(rule_light_light_off)
+											outputs(rule_light_contr_lightoff)
+										},
+										StateMachineTransition light_off2off2{
+											priority 0
+											toState light_off
+											inputs(rule_light_light_enable)
+											outputs(rule_light_contr_lightoff)
+										},
+										StateMachineTransition light_off2on{
+											priority 0
+											toState light_on
+											inputs(rule_light_light_on)
+											outputs(rule_light_contr_lighton)
+										},
+										StateMachineTransition light_off2disabled{
+											priority 0
+											toState light_disabled
+											inputs(rule_light_light_disable)
+											outputs(rule_light_contr_lightoff)
+										}
+									}
+								},
+								StateMachineState light_on{
+									outputTransitions{
+										StateMachineTransition light_on2on1{
+											priority 0
+											toState light_on
+											inputs(rule_light_light_on)
+											outputs(rule_light_contr_lighton)
+										},
+										StateMachineTransition light_on2on2{
+											priority 0
+											toState light_on
+											inputs(rule_light_light_enable)
+											outputs(rule_light_contr_lighton)
+										},
+										StateMachineTransition light_on2off{
+											priority 0
+											toState light_off
+											inputs(rule_light_light_off)
+											outputs(rule_light_contr_lightoff)
+										},
+										StateMachineTransition light_on2disabled{
+											priority 0
+											toState light_disabled
+											inputs(rule_light_light_disable)
+											outputs(rule_light_contr_lightoff)
+										}
+									}
+								},
+								StateMachineState light_disabled{
+									outputTransitions{
+										StateMachineTransition light_disa2disa1{
+											priority 0
+											toState light_disabled
+											inputs(rule_light_light_off)
+											outputs(rule_light_contr_lightoff)
+										},
+										StateMachineTransition light_disa2disa2{
+											priority 0
+											toState light_disabled
+											inputs(rule_light_light_on)
+											outputs(rule_light_contr_lightoff)
+										},
+										StateMachineTransition light_disa2disa3{
+											priority 0
+											toState light_disabled
+											inputs(rule_light_light_disable)
+											outputs(rule_light_contr_lightoff)
+										},
+										StateMachineTransition light_disa2off{
+											priority 0
+											toState light_off
+											inputs(rule_light_light_enable)
+											outputs(rule_light_contr_lightoff)
+										}
+									}
+								}
+							}
+							firingRules{
+								FiringRule rule_light_light_on{
+									compType Equal
+									channel ch_movement2light
+									tokens{
+										Token{ value {"on"} type controlType}
+									}
+								},
+								FiringRule rule_light_light_off{
+									compType Equal
+									channel ch_movement2light
+									tokens{
+										Token{ value {"off"} type controlType}
+									}
+								},
+								FiringRule rule_light_light_enable{
+									compType Equal
+									channel ch_lightness2light
+									tokens{
+										Token{ value {"enable"} type controlType}
+									}
+								},
+								FiringRule rule_light_light_disable{
+									compType Equal
+									channel ch_lightness2light
+									tokens{
+										Token{ value {"disable"} type controlType}
+									}
+								},
+								FiringRule rule_light_contr_lighton{
+									channel ch_contr_light
+									tokens{
+										Token { value {"true"} type boolType}
+									}
+								},
+								FiringRule rule_light_contr_lightoff{
+									channel ch_contr_light
+									tokens{
+										Token { value {"false"} type boolType}
+									}
+								}
+							}
+						}
+					}
+					ownChannels{
+						Channel ch_movement2light{type controlType},
+						Channel ch_lightness2light{type controlType}
+					}
+				},
+				StateMachine sm_moisture{
+					initialState moisture_norm
+					nodes {
+						StateMachineState moisture_norm{
+							outputTransitions{
+								StateMachineTransition moisture_norm2norm{
+									priority 0
+									toState moisture_norm
+									inputs (rule_moisture_norm)
+									outputs (rule_moisture_sprinkler_off)
+								},
+								StateMachineTransition moisture_norm2low{
+									priority 0
+									toState moisture_low
+									inputs (rule_moisture_low)
+									outputs(rule_moisture_sprinkler_on)
+								},
+								StateMachineTransition moisture_norm2norm_rm{
+									priority 0
+									toState moisture_norm
+									inputs (rule_remote_norm)
+									outputs (rule_moisture_sprinkler_off)
+								},
+								StateMachineTransition moisture_norm2low_rm{
+									priority 0
+									toState moisture_low
+									inputs (rule_remote_low)
+									outputs(rule_moisture_sprinkler_on)
+								}
+							}
+						},
+						StateMachineState moisture_low{
+							outputTransitions{
+								StateMachineTransition moisture_low2low{
+									priority 0
+									toState moisture_low
+									inputs (rule_moisture_low)
+									outputs(rule_moisture_sprinkler_on)
+								},
+								StateMachineTransition moisture_low2norm{
+									priority 0
+									toState moisture_norm
+									inputs (rule_moisture_norm)
+									outputs (rule_moisture_sprinkler_off)
+								},
+								StateMachineTransition moisture_low2low2{
+									priority 0
+									toState moisture_low
+									inputs (rule_remote_norm)
+									outputs(rule_moisture_sprinkler_on)
+								},
+								StateMachineTransition moisture_low2low3{
+									priority 0
+									toState moisture_low
+									inputs (rule_remote_norm)
+									outputs(rule_moisture_sprinkler_on)
+								}
+							}
+						}
+					}
+					firingRules{
+						FiringRule rule_moisture_low{
+							compType Less
+							channel ch_sens_moisture
+							tokens{
+								Token{ value {"25.0"} type doubleType }
+							}
+						},
+						FiringRule rule_moisture_norm{
+							compType Greater
+							channel ch_sens_moisture
+							tokens{
+								Token{ value {"25.0"} type doubleType }
+							}
+						},
+						FiringRule rule_moisture_sprinkler_on{
+							channel ch_contr_sprinkler
+							tokens{
+								Token{ value {"true"} type boolType}
+							}
+						},
+						FiringRule rule_moisture_sprinkler_off{
+							channel ch_contr_sprinkler
+							tokens{
+								Token{ value {"false"} type boolType}
+							}
+						},
+						FiringRule rule_remote_low{
+							compType Less
+							channel ch_remote
+							tokens{
+								Token{ value {"25.0"} type doubleType }
+							}
+						},
+						FiringRule rule_remote_norm{
+							compType Greater
+							channel ch_remote
+							tokens{
+								Token{ value {"25.0"} type doubleType }
+							}
+						}
+					}
+				}
+			}
+			ownChannels{
+				Channel ch_sens_movement {type boolPair},
+				Channel ch_sens_lightness{type boolType},
+				Channel ch_sens_moisture{type doubleType},
+				Channel ch_contr_light{type boolType},
+				Channel ch_contr_sprinkler{type boolType}
+			}
+		},
+		DataflowNet frontGarden{
+			outputChannels(ch_remote)
+			process remote
+			nodes{
+				StateMachine sm_front_moisture{
+					initialState front_moisture_norm
+					nodes {
+						StateMachineState front_moisture_norm{
+							outputTransitions{
+								StateMachineTransition front_moisture_norm2norm{
+									priority 0
+									toState front_moisture_norm
+									inputs (rule_front_moisture_norm)
+									outputs (rule_front_remote_off)
+								},
+								StateMachineTransition front_moisture_norm2low{
+									priority 0
+									toState front_moisture_low
+									inputs (rule_front_moisture_low)
+									outputs(rule_front_remote_on)
+								}
+							}
+						},
+						StateMachineState front_moisture_low{
+							outputTransitions{
+								StateMachineTransition front_moisture_low2low{
+									priority 0
+									toState front_moisture_low
+									inputs (rule_front_moisture_low)
+									outputs(rule_front_remote_on)
+								},
+								StateMachineTransition front_moisture_low2norm{
+									priority 0
+									toState front_moisture_norm
+									inputs (rule_front_moisture_norm)
+									outputs (rule_front_remote_off)
+								}
+							}
+						}
+					}
+					firingRules{
+						FiringRule rule_front_moisture_low{
+							compType Less
+							channel ch_sens_front_moisture
+							tokens{
+								Token{ value {"20.0"} type doubleType }
+							}
+						},
+						FiringRule rule_front_moisture_norm{
+							compType Greater
+							channel ch_sens_front_moisture
+							tokens{
+								Token{ value {"20.0"} type doubleType }
+							}
+						},
+						FiringRule rule_front_remote_on{
+							channel ch_remote
+							tokens{
+								Token{ value {"0.0"} type doubleType}
+							}
+						},
+						FiringRule rule_front_remote_off{
+							channel ch_remote
+							tokens{
+								Token{ value {"100.0"} type doubleType}
+							}
+						}
+					}
+				}
+			}
+			ownChannels{
+				Channel ch_sens_front_moisture{type doubleType}
+			}
+		}
+	}
+	channels{
+		Channel ch_remote{ type doubleType }
+	}
+	
+	processes {
+		Process local {
+			host "192.168.1.240"
+		},
+		Process remote {
+			host "192.168.1.245"
+		}
+	}
+}

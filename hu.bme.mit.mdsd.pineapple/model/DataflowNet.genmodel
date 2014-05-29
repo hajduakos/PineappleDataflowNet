@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/hu.bme.mit.mdsd.pineapple.dataflownet/src" editDirectory="/hu.bme.mit.mdsd.pineapple.dataflownet.edit/src"
+    editorDirectory="/hu.bme.mit.mdsd.pineapple.dataflownet.editor/src" modelPluginID="hu.bme.mit.mdsd.pineapple.dataflownet"
+    modelName="DataflowNet" modelPluginClass="" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
+    editPluginID="hu.bme.mit.mdsd.pineapple.dataflownet.edit" editorPluginID="hu.bme.mit.mdsd.pineapple.dataflownet.editor"
+    usedGenPackages="TypeHierarchy.genmodel#//typehierarchy" operationReflection="true"
+    importOrganizing="true">
+  <foreignModel>DataflowNet.ecore</foreignModel>
+  <genPackages prefix="Dataflownet" disposableProviderFactory="true" ecorePackage="DataflowNet.ecore#/">
+    <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.emf.ecore.xcore.exporter">
+      <genAnnotations source="Dataflownet.xcore"/>
+    </genAnnotations>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="DataflowNet.ecore#//Comparation">
+      <genEnumLiterals ecoreEnumLiteral="DataflowNet.ecore#//Comparation/Equal"/>
+      <genEnumLiterals ecoreEnumLiteral="DataflowNet.ecore#//Comparation/NotEqual"/>
+      <genEnumLiterals ecoreEnumLiteral="DataflowNet.ecore#//Comparation/Less"/>
+      <genEnumLiterals ecoreEnumLiteral="DataflowNet.ecore#//Comparation/Greater"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="DataflowNet.ecore#//Protocol">
+      <genEnumLiterals ecoreEnumLiteral="DataflowNet.ecore#//Protocol/Paho"/>
+      <genEnumLiterals ecoreEnumLiteral="DataflowNet.ecore#//Protocol/Akka"/>
+    </genEnums>
+    <genClasses image="false" ecoreClass="DataflowNet.ecore#//NamedElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DataflowNet.ecore#//NamedElement/name"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="DataflowNet.ecore#//Node">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference DataflowNet.ecore#//Node/parent"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//StateMachine">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachine/nodes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachine/initialState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachine/firingRules"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//DataflowNet">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowNet/outputChannels"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowNet/inputChannels"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowNet/nodes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowNet/ownChannels"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowNet/process"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//StateMachineState">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachineState/outputTransitions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachineState/inputTransitions"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachineState/parent"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//StateMachineTransition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DataflowNet.ecore#//StateMachineTransition/priority"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachineTransition/fromState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachineTransition/toState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachineTransition/inputs"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//StateMachineTransition/outputs"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//Channel">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//Channel/type"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//FiringRule">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//FiringRule/channel"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//FiringRule/tokens"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DataflowNet.ecore#//FiringRule/compType"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//Token">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//Token/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DataflowNet.ecore#//Token/value"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//DataflowSystem">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowSystem/types"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowSystem/nets"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowSystem/channels"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DataflowNet.ecore#//DataflowSystem/processes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DataflowNet.ecore#//DataflowSystem/protocol"/>
+    </genClasses>
+    <genClasses ecoreClass="DataflowNet.ecore#//Process">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DataflowNet.ecore#//Process/host"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

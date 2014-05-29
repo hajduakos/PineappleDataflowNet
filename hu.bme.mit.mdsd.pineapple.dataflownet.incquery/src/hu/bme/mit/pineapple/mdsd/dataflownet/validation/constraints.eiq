@@ -1,0 +1,340 @@
+package hu.bme.mit.pineapple.mdsd.dataflownet.validation
+
+import "http://dataflownet/1.0"
+import "http://typehierarchy/1.0"
+
+
+/*___ _   _ ___  ____    ____ ____ _  _ ____ ___ ____ ____ _ _  _ ___ ____ 
+ * |   \_/  |__] |___    |    |  | |\ | [__   |  |__/ |__| | |\ |  |  [__  
+ * |    |   |    |___    |___ |__| | \| ___]  |  |  \ |  | | | \|  |  ___]
+ */
+
+
+/*
+ * A Channel and the Tokens connected to it via FiringRules must have the same type.
+ */
+@Constraint(
+	location = token, 
+	severity = "error", 
+	message = "Type mismatch for token and channel on channel named '$channel.name$'."
+)
+pattern invalidTokenForFiringRuleOnChannel(channel : Channel, token : Token) {
+	Channel.type(channel,type);
+	FiringRule.channel(firingRule,channel);
+	find tokenWithTypeForFiringRule(token,tokenType,firingRule);
+	tokenType != type;
+}
+
+pattern tokenWithTypeForFiringRule(token : Token, tokenType: Type,firingRule : FiringRule) {
+	FiringRule.tokens(firingRule,token);
+	Token.type(token,tokenType);
+}
+
+
+/*
+ * Tokens of type SimpleType can only contain one value.
+ */  
+@Constraint(
+	location = token,
+	severity = "error",
+	message = "Simple type token should have 1 value!"	
+)
+ pattern wrongTokenValueNumberSimple(token : Token){
+   Token.type(token, type);
+   SimpleType(type);
+   1 != count find tokenValue(token, _);
+ }
+
+pattern tokenValue(token,  value){
+	Token.value(token, value);
+}
+
+
+/*
+ * Tokens with types IntType, DoubleType and BooleType can only contain 
+ * a string that represents a valid value for the type.
+ */
+@Constraint(
+	location = token,
+	severity = "error",
+	message = "Boolean token should have valid boolean value!"	
+)
+pattern wrongBooleanValue(token : Token) {
+	Token.type(token, type);
+	BoolType(type);
+	Token.value(token, value);
+	check(
+		!(value.equals("true") || value.equals("false"))
+	);
+}
+
+
+@Constraint(
+	location = token,
+	severity = "error",
+	message = "Double token should have valid double value!"	
+)
+pattern wrongDoubleValue(token : Token) {
+	Token.type(token, type);
+	DoubleType(type);
+	Token.value(token, value);
+	check( {
+		try {
+			Double.parseDouble(value);
+		}
+		catch(NumberFormatException e) {
+			return true 
+		}
+		return false 
+	} );
+}
+
+
+@Constraint(
+	location = token,
+	severity = "error",
+	message = "Integer token should have valid integer value!"	
+)
+pattern wrongIntegerValue(token : Token) {
+	Token.type(token, type);
+	IntType(type);
+	Token.value(token, value);
+	check( {
+		try {
+			Integer.parseInt(value);
+		}
+		catch(NumberFormatException e) {
+			return true 
+		}
+		return false 
+	});
+}
+
+/*  ___ ___ ____ _  _ ____ ___ _  _ ____ ____ _       ____ ____ _  _ ____ ___ ____ ____ _ _  _ ___ ____ 
+ * [__   |  |__/ |  | |     |  |  | |__/ |__| |       |    |  | |\ | [__   |  |__/ |__| | |\ |  |  [__  
+ * ___]  |  |  \ |__| |___  |  |__| |  \ |  | |___    |___ |__| | \| ___]  |  |  \ |  | | | \|  |  ___] 
+ */
+
+
+/*
+ * The FiringRules of a StateMachine can only reference Channels that are owned
+ * or referenced as input/output by the parent DataflowNet of the StateMachine. 
+ */
+@Constraint(
+	location = firingRule,
+	severity = "error",
+	message = "The rule '$firingRule.name$' refers to a channel not owned by its state machine's parent (channel '$channel.name$')."
+)
+pattern referenceNotOwnedOrIOChannels(firingRule : FiringRule, channel : Channel) {
+	StateMachine.firingRules(stateMachine,firingRule);
+	StateMachine.parent(stateMachine,smParent);
+
+	FiringRule.channel(firingRule,channel);
+	DataflowNet.ownChannels(channelParent1,channel);
+	DataflowNet.inputChannels(channelParent2,channel);
+	DataflowNet.outputChannels(channelParent3,channel);
+	
+	channelParent1 != smParent;
+	channelParent2 != smParent;
+	channelParent3 != smParent;
+}
+
+/*
+ * For every StateMachineTransition the parent of the toState and fromState must be the same.
+ */
+@Constraint(
+	location = transition,
+	severity = "error",
+	message = "Invalid transition '$transition.name$': toState and fromState must have the same parent."
+)
+pattern invalidTransitionBetweenStates(transition : StateMachineTransition) {
+	StateMachineTransition.toState(transition,toState);
+	StateMachineTransition.fromState(transition,fromState);
+	StateMachineState.parent(toState,toStateParent);
+	StateMachineState.parent(fromState,fromStateParent);
+	toStateParent != fromStateParent;
+}
+
+
+/*
+ * Dangling channels cause warnings.
+ */
+@Constraint(
+	location = channel,
+	severity = "warning",
+	message = "Channel '$channel.name$' is a dangling channel."
+)
+pattern danglingChannel(channel : Channel) {
+	neg find connectedChannel(channel);
+}
+
+pattern connectedChannel(channel : Channel) {
+	DataflowNet.inputChannels(_dataflowNet1,channel);
+	DataflowNet.outputChannels(_dataflowNet2,channel);
+}
+
+
+/*
+ * Nodes must have exactly one parent, except the top-level DataflowNet, who has no parent.
+ */
+@Constraint(
+	location = node, 
+	severity = "error", 
+	message = "The node '$node.name$' has no parent."
+)
+pattern hasNoParent(node : Node) {
+	neg find hasParent(node);
+}
+
+pattern hasParent(node : Node){
+	Node.parent(node,_parent);
+} or {
+	DataflowSystem.nets(_dataflowSystem,node);
+}
+
+/*
+ * The scope of a FiringRule is inside a StateMachine which means 
+ * that only transitions within the defining StateMachine can use it.
+ */
+@Constraint(
+	location = firingRule,
+	severity = "error",
+	message = "The firing rule '$firingRule.name$' cannot be referenced from the transition '$transition.name$'. It's out of scope." 
+)
+pattern illegalAccessToFiringRule(firingRule : FiringRule, transition : StateMachineTransition) {
+	find inputOutputFiringRule(transition,firingRule);
+	StateMachine.firingRules(ruleParent,firingRule);
+	StateMachineTransition.fromState.parent(transition,transitionParent);
+	transitionParent != ruleParent;
+}
+pattern inputOutputFiringRule(transition : StateMachineTransition, firingRule : FiringRule) {
+	StateMachineTransition.inputs(transition, firingRule);
+} or {
+	StateMachineTransition.outputs(transition, firingRule);
+}
+
+/*
+ * Exactly one net should use a channel as input and exactly one net should use it as output.
+ */
+ @Constraint(
+	location = channel,
+	severity = "error",
+	message = "Only one dataflow net should use the channel '$channel.name$' as input and only one as output." 
+)
+pattern tooManyChannelUser(channel : Channel) {
+	DataflowNet.inputChannels(dn1,channel);
+	DataflowNet.inputChannels(dn2,channel);
+	dn1 != dn2;
+} or {
+	DataflowNet.outputChannels(dn1,channel);
+	DataflowNet.outputChannels(dn2,channel);
+	dn1 != dn2;
+}
+
+/*
+ * Only top level dataflow nets should reference a process
+ */
+@Constraint(
+	location = dataflowNet,
+	severity = "error",
+	message = "The non-toplevel dataflow net '$dataflowNet.name$' references a process." 
+)
+pattern processToNonTopLevelDataflowNet(dataflowNet : DataflowNet) {
+	DataflowNet.parent(dataflowNet,_parent);
+	DataflowNet.process(dataflowNet,_process);
+}
+
+/* _  _ _  _ _ ____ _  _ ____ _  _ ____ ____ ____    ____ ____ _  _ ____ ___ ____ ____ _ _  _ ___ ____ 
+ * |  | |\ | | |  | |  | |___ |\ | |___ [__  [__     |    |  | |\ | [__   |  |__/ |__| | |\ |  |  [__  
+ * |__| | \| | |_\| |__| |___ | \| |___ ___] ___]    |___ |__| | \| ___]  |  |  \ |  | | | \|  |  ___]
+ */
+
+
+/*
+ * The names of sibling Nodes and StateMachineStates must be unique.
+ */
+@Constraint(
+	location = Elem1,
+	severity = "error",
+	message = "Sibling elements must have different names (name '$Elem1.name$' is used twice)!"	
+)
+pattern duplicateNamesOfSiblings(Elem1, Elem2) {
+	Elem1 != Elem2;
+	Node.name(Elem1,name);
+	Node.name(Elem2,name);
+	Node.parent(Elem1,parent);
+	Node.parent(Elem2,parent);
+} or {
+	Elem1 != Elem2;
+	StateMachineState.name(Elem1,name);
+	StateMachineState.name(Elem2,name);
+	StateMachineState.parent(Elem1,parent);
+	StateMachineState.parent(Elem2,parent);
+}
+
+/*
+ * The types and the top-level DataflowNets of the DataflowSystem must have unique names.
+ */
+ @Constraint(
+ 	location = dataflowSystem,
+ 	severity = "error",
+ 	message = "The DataflowNets and Types within a DataflowSystem must have unique names."
+ )
+ pattern nameUniquenessInASystem(dataflowSystem : DataflowSystem) {
+ 	DataflowSystem.nets(dataflowSystem,net);
+ 	DataflowSystem.types(dataflowSystem,type);
+ 	DataflowNet.name(net,name);
+ 	Type.name(type,name);
+ } 
+ 
+/*
+ * Every name attribute should contain a string that is a valid Java variable name
+ */
+ @Constraint(
+ 	location = namedElement,
+ 	severity = "error",
+ 	message = "The model element '$namedElement.name$' has invalid name. Names must be valid Java variable names."
+ )
+ pattern nameInvalidJava(namedElement : NamedElement) {
+ 	NamedElement.name(namedElement,name);
+ 	check(!name.matches("[A-Za-z_$][A-Za-z0-9_$]*"));
+ } 
+ 
+ @Constraint(
+ 	location = type,
+ 	severity = "error",
+ 	message = "The the type '$type.name$' has invalid name. (Type)Names must be valid Java variable names."
+ )
+ pattern typeNameInvalidJava(type : Type) {
+ 	Type.name(type,name);
+ 	check(!name.matches("[A-Za-z_$][A-Za-z0-9_$]*"));
+ } 
+ 
+ /*
+  * Every processing node (represented by a Process instance) should have a unique identifier.
+  */
+@Constraint(
+ 	location = p1,
+ 	severity = "error",
+ 	message = "Multiple processes share the name '$p1.name$'."
+ )
+pattern nonUniqueProcessNames(p1 : Process, p2 : Process) {
+	Process.name(p1,name);
+	Process.name(p2,name);
+	p1 != p2;
+}
+ 
+ /*
+  * Every channel must have unique name.
+  */
+@Constraint(
+ 	location = c1,
+ 	severity = "error",
+ 	message = "Multiple channels share the name '$c1.name$'."
+ )
+pattern nonUniqueChannelNames(c1 : Channel, c2 : Channel) {
+	Channel.name(c1,name);
+	Channel.name(c2,name);
+	c1 != c2;
+}
+

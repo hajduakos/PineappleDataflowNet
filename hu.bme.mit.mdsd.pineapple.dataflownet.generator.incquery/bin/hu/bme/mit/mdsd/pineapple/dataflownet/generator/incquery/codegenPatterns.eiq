@@ -1,0 +1,54 @@
+package hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery
+
+import "http://dataflownet/1.0"
+
+
+pattern getInputEnding(channel : Channel, process : Process) {
+	find remoteChannel(channel);
+	DataflowNet.inputChannels(dataflowNet,channel);
+	DataflowNet.process(dataflowNet,process);
+}
+
+pattern getOutputEnding(channel : Channel, process : Process) {
+	find remoteChannel(channel);
+	DataflowNet.outputChannels(dataflowNet,channel);
+	DataflowNet.process(dataflowNet,process);
+}
+
+
+pattern remoteChannelOutputFiringRule(firingRule : FiringRule) {
+	find remoteChannel(channel);
+	FiringRule.channel(firingRule,channel);
+	StateMachine.firingRules(stateMachine,firingRule);
+	find parent+(stateMachine,referrerDataflowNet);
+	DataflowNet.outputChannels(referrerDataflowNet,channel);
+}
+
+pattern remoteChannelInputFiringRule(firingRule : FiringRule) {
+	find remoteChannel(channel);
+	FiringRule.channel(firingRule,channel);
+	StateMachine.firingRules(stateMachine,firingRule);
+	find parent+(stateMachine,referrerDataflowNet);
+	DataflowNet.inputChannels(referrerDataflowNet,channel);
+}
+
+pattern remoteChannel(channel: Channel){
+	DataflowSystem.channels(_dataflowSystem,channel);
+	DataflowNet.outputChannels(outDataflowNet,channel);
+	DataflowNet.inputChannels(inDataflowNet,channel);
+	find topLevelElement(outDataflowNet,topLevelOutDataflowNet);
+	find topLevelElement(inDataflowNet,topLevelInDataflowNet);
+	DataflowNet.process(topLevelInDataflowNet,process1);
+	DataflowNet.process(topLevelOutDataflowNet,process2);
+	process1 != process2;
+}
+
+private pattern topLevelElement(n1 : Node, n2 : Node) {
+	find parent +(n1, n2);
+} or {
+	n1 == n2;
+}
+
+private pattern parent(n1, n2){
+	Node.parent(n1,n2);
+}

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Bundle
+Bundle-SymbolicName: hu.bme.mit.mdsd.pineapple.dataflownet.bundle
+Bundle-Version: 1.0.0.qualifier
+Export-Package: hu.bme.mit.mdsd.pineapple.dataflownet.bundle,
+ hu.bme.mit.mdsd.pineapple.dataflownet.process
+Require-Bundle: hu.bme.mit.mdsd.pineapple.dataflownet.bundle.dependency.akka;visibility:=reexport,
+ hu.bme.mit.mdsd.pineapple.dataflownet.bundle.dependency.paho;visibility:=reexport

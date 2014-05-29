@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Product
+Bundle-SymbolicName: hu.bme.mit.mdsd.pineapple.dataflownet.ui.product;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: hu.bme.mit.mdsd.pineapple.dataflownet.ui.product.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.forms;bundle-version="3.6.1",
+ org.eclipse.swt,
+ hu.bme.mit.mdsd.pineapple.dataflownet.process.ui,
+ hu.bme.mit.mdsd.pineapple.dataflownet.bundle,
+ org.eclipse.zest.core,
+ org.eclipse.zest.layouts
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

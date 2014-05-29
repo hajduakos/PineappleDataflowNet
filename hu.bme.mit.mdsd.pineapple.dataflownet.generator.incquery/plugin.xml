@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+
+   <extension
+         id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.getInputEnding"
+         point="org.eclipse.incquery.runtime.queryspecification">
+      <matcher
+            querySpecificationProvider="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.util.GetInputEndingQuerySpecification$Provider"
+            id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.getInputEnding">
+      </matcher>
+   </extension>
+   <extension
+         id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.getOutputEnding"
+         point="org.eclipse.incquery.runtime.queryspecification">
+      <matcher
+            querySpecificationProvider="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.util.GetOutputEndingQuerySpecification$Provider"
+            id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.getOutputEnding">
+      </matcher>
+   </extension>
+   <extension
+         id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.remoteChannelOutputFiringRule"
+         point="org.eclipse.incquery.runtime.queryspecification">
+      <matcher
+            querySpecificationProvider="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.util.RemoteChannelOutputFiringRuleQuerySpecification$Provider"
+            id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.remoteChannelOutputFiringRule">
+      </matcher>
+   </extension>
+   <extension
+         id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.remoteChannelInputFiringRule"
+         point="org.eclipse.incquery.runtime.queryspecification">
+      <matcher
+            querySpecificationProvider="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.util.RemoteChannelInputFiringRuleQuerySpecification$Provider"
+            id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.remoteChannelInputFiringRule">
+      </matcher>
+   </extension>
+   <extension
+         id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.remoteChannel"
+         point="org.eclipse.incquery.runtime.queryspecification">
+      <matcher
+            querySpecificationProvider="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.util.RemoteChannelQuerySpecification$Provider"
+            id="hu.bme.mit.mdsd.pineapple.dataflownet.generator.incquery.remoteChannel">
+      </matcher>
+   </extension>
+
+</plugin>

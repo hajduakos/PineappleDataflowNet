@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/hu.bme.mit.mdsd.pineapple.typehierarchy/src" editDirectory="/hu.bme.mit.mdsd.pineapple.typehierarchy.edit/src"
+    editorDirectory="/hu.bme.mit.mdsd.pineapple.typehierarchy.editor/src" modelPluginID="hu.bme.mit.mdsd.pineapple.typehierarchy"
+    modelName="TypeHierarchy" modelPluginClass="" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>TypeHierarchy.ecore</foreignModel>
+  <genPackages prefix="Typehierarchy" disposableProviderFactory="true" ecorePackage="TypeHierarchy.ecore#/">
+    <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.emf.ecore.xcore.exporter">
+      <genAnnotations source="Typehierarchy.xcore"/>
+    </genAnnotations>
+    <genClasses ecoreClass="TypeHierarchy.ecore#//Type">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute TypeHierarchy.ecore#//Type/name"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="TypeHierarchy.ecore#//SimpleType"/>
+    <genClasses ecoreClass="TypeHierarchy.ecore#//IntType"/>
+    <genClasses ecoreClass="TypeHierarchy.ecore#//StringType"/>
+    <genClasses ecoreClass="TypeHierarchy.ecore#//UserType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute TypeHierarchy.ecore#//UserType/domain"/>
+    </genClasses>
+    <genClasses ecoreClass="TypeHierarchy.ecore#//ComplexType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference TypeHierarchy.ecore#//ComplexType/containedTypes"/>
+    </genClasses>
+    <genClasses ecoreClass="TypeHierarchy.ecore#//DoubleType"/>
+    <genClasses ecoreClass="TypeHierarchy.ecore#//BoolType"/>
+  </genPackages>
+</genmodel:GenModel>

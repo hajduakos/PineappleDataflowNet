@@ -9,12 +9,12 @@ It is a Dataflow Net modeler tool created at the Fault Tolerant Systems Research
 Technologies used
 -----------------
 
-* Eclipse Modeling Framework 2.0.2 for creating the metamodel
-* EMF IncQuery 0.8.0 (http://viatra.inf.mit.bme.hu/incquery) for validation
-* Xtext 2.5.3 for creating textual language
-* Xtend 2.5.3 for generating GraphML and Java code
+* Eclipse Modeling Framework 2.0.2 for creating the metamodel (Has to be installed in Eclipse)
+* EMF IncQuery 0.8.0 (http://viatra.inf.mit.bme.hu/incquery) for validation (Has to be installed in Eclipse)
+* Xtext 2.5.3 for creating textual language (Has to be installed in Eclipse)
+* Xtend 2.5.3 for generating GraphML and Java code (Has to be installed in Eclipse)
 * yED 3.12.2 for visualization (http://www.yworks.com/en/products_yed_about.html)
-* Akka 2.2.2 (http://akka.io/) and Paho 0.4.0 (http://www.eclipse.org/paho/) for remote communication
+* Akka 2.2.2 (http://akka.io/) and Paho 0.4.0 (http://www.eclipse.org/paho/) for remote communication (Included as dependecies)
 
 How to use it
 -------------
@@ -29,7 +29,7 @@ How to use it
 6. Open the project "hu.bme.mit.mdsd.pineapple.sample", the sample instance model is in the file "house_v9.dn".
 7. Right click the "house_v9.dn" and click "Convert textual dataflownet to XMI" to get the "house_v9.dataflownet" file.
 8. Right click on the "house_v9.dataflownet" file and generete the following:
-8.1. Generate GraphML representation using the button "Generate GraphML Representation".
+8.1. Generate GraphML representation using the button "Generate GraphML Representation". Open the GraphML file in yED and use some layout.
 8.2. Generate Java code using the button "Generate Java Simulation Code".
 8.3. Generate UI using the button "Generate Java UI Code".
 9. Link the generated project "hu.bme.mit.mdsd.pineapple.dataflownet.process.ui" into the host Eclipse application.
@@ -38,6 +38,7 @@ How to use it
 12. Run the RCP in two instances:
 12.1. Run with parameters "local -clearPersistedState". ("local" is the name of the first process in the instance model.)
 12.2. Run with parameters "remote -clearPersistedState". ("remote" is the name of the second process in the instance model.)
+13. You can enter the values of tokens as a string in the textboxes and push them on the channels using the buttons.
 
 Roadmap
 -------

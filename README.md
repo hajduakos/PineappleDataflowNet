@@ -29,8 +29,8 @@ The homework was done in 4 phases. The table shows our work hours in each phase.
 | Name         | Phase 1 | Phase 2 | Phase 3 | Phase 4 | Total |
 |--------------|---------|---------|---------|---------|-------|
 | Ákos Hajdu   |      11 |      26 |      18 |      22 |    77 |
-| József Makai |    11.5 |      35 |      31 |      14 |    80 |
-| Márton Búr   |       9 |      28 |    26.5 |    16.5 |  91.5 |
+| József Makai |    11.5 |      35 |      31 |      14 |  91.5 |
+| Márton Búr   |       9 |      28 |    26.5 |    16.5 |    80 |
 
 Roadmap
 -------

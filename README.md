@@ -38,3 +38,8 @@ Roadmap
 Extension plans:
 * Implement new protocols for remote communication
 * Improve the state machine graph layout
+
+Related projects
+----------------
+
+Railway Modeler - a homework for the same MDSD course next year (Go Model Railway Project, https://github.com/benedekh/gomrp).

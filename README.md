@@ -42,4 +42,4 @@ Extension plans:
 Related projects
 ----------------
 
-Railway Modeler - a homework for the same MDSD course next year (Go Model Railway Project, https://github.com/benedekh/gomrp).
+Go Model Railway Project - a homework for the same MDSD course next year (a railway modeler, https://github.com/benedekh/gomrp).
